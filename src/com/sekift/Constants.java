@@ -8,6 +8,20 @@ package com.sekift;
  * @time:2014-7-8 下午03:38:14
  */
 public class Constants {
+	//是否测试环境
+	//private static final boolean test = false; 
+	// 贴吧写文件
+	public static String TIEBA_SINGLE = "/www/client/monitor_crawler/link.txt";
+	public static String TIEBA_ALL = "/www/client/monitor_crawler/tieba_link.txt";
+	
+	/*static{
+		if(test){
+			System.out.println("进入了");
+			TIEBA_SINGLE = "D:/www/client/monitor_crawler/link.txt";
+			TIEBA_ALL = "D:/www/client/monitor_crawler/tieba_link.txt";
+		}
+	}*/
+	
 	/**
 	 * 匹配
 	 * 

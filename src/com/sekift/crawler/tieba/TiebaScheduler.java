@@ -15,8 +15,8 @@ public class TiebaScheduler {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	
 	public void link() {
-		Tieba tb = new Tieba();
-		scheduler.scheduleAtFixedRate(tb, 0, 1 * 60, SECONDS);
+		BaiduTieba tb = new BaiduTieba();
+		scheduler.scheduleAtFixedRate(tb, 0, 3 * 60, SECONDS);
 	}
 	
 	public static void main(String[] args) {
