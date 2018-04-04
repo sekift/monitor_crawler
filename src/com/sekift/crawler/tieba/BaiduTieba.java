@@ -79,6 +79,7 @@ public class BaiduTieba implements Runnable {
 	    denyList.add("short=eSgq7xo");
 	    denyList.add("short=eStNE2e");
 	    denyList.add("short=eT7Zwdk");
+	    denyList.add("short=eSZwWH8");
 	    denyList.add("short=gfMmbE7");
 	    denyList.add("short=gfvNzLh");
 	    denyList.add("short=gfN7Quf");
