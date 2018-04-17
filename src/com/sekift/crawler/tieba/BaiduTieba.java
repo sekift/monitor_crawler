@@ -83,11 +83,23 @@ public class BaiduTieba implements Runnable {
 							+ dateTime;
 					String spe = "<br />";
 					String resultContent = "<a href=\"" + content + "\" target=\"_blank\">" + content + "</a>";
-
+					String requestQuery = getQuery(content);
+					
 					if ((!deleteList.contains(content)) && (content.contains("pan.baidu.com"))
-							&& (!denyList.contains(getQuery(content)))) {
+							&& (!denyList.contains(requestQuery))) {
 						deleteList.add(content);
+						//判断失效
 						resultList.add(resultLink + spe + resultContent);
+						/*if(-1 == check(requestQuery)){
+							System.out.println(resultLink + spe + "[失效]:" + resultContent);
+							denyList.add(requestQuery);
+						} else if (1 == check(requestQuery)){
+							System.out.println(resultLink + spe + "[有效]:" + resultContent);
+							resultList.add(resultLink + spe + "[有效]:" + resultContent);
+						} else {
+						    System.out.println(resultLink + spe + "[未知]:" + resultContent);
+							resultList.add(resultLink + spe + "[未知]:" + resultContent);
+						}*/
 					}
 				}
 			}
@@ -116,9 +128,14 @@ public class BaiduTieba implements Runnable {
 		return shortStr;
 	}
 
-	public static boolean check(String url) {
-		SleepUtil.sleepBySecond(10, 20);
-		String shortStr = getQuery(url);
+	/**
+	 * "errno": 0  表示能用
+	 * "errno": 112 表示失效
+	 * 其他都是未知
+	 */
+	public static int check(String requestQuery) {
+		SleepUtil.sleepBySecond(2, 4);
+		//String shortStr = getQuery(url);
 		Map<String, String> header = new HashMap<String, String>();
 		header.put("Accept", "application/json, text/javascript, */*; q=0.01");
 		header.put("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
@@ -132,11 +149,18 @@ public class BaiduTieba implements Runnable {
 		header
 				.put(
 						"cookie",
-						"\tBAIDUID=8A369DA9A9C45DD8BC9FE928438D60BB:FG=1; BIDUPSID=32C3D76E2A16293C792F408EF59926CD; PSTM=1468940621; Hm_lvt_7a3960b6f067eb0085b7f96ff5e660b0=1501303955,1501871110; secu=1; __cfduid=d7661dab55b96415dc8815459d943699f1490805720; BDUSS=NHSi15TUZLemdGSjdUam1FMlhJaW9kdDl3SDhlLWIxOURrR0JJUlhsQlo1VXRaSVFBQUFBJCQAAAAAAAAAAAEAAAAciYZBbGVpcWlhbmdjYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFlYJFlZWCRZUH; PANWEB=1; BDCLND=3AaiGAgU9Cxj%2Fxjh3UZVtrKW1%2FaGT8qi; cflag=15%3A3; locale=zh; SCRC=effb58aebc8f6686cbc14c9b3c365044; STOKEN=83534a6e9455f69b52dd57132f8a272b3361e35b224229f54849652e76990aa4; uc_login_unique=ed181ca636958757d68ee8aa321c7515; PANPSC=11081265557532140931%3AbuiwA%2FpMDzv%2FItLn%2F9kOo9wxnZzNwr1w9edlHB%2Bd1obzhZoHIFjSWXgXofrWESI4I6iA8uodFjd7fYrNEXc%2BGUOv%2BbFn7vDNgFjHX8xyNyqtUq%2FdzxBw4uWh0XthgcRWkxwTFV4Vd9Unih65clERtryHDAnhPhMz5dNt%2BsRbU69UMSLhYBPCxc5TMpqnKCFM; SFSSID=ieks1al7c7hggkgo5i1j3shp12; BDRCVFR[gltLrB7qNCt]=mk3SLVN4HKm; PSINO=6; H_PS_PSSID=; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02537795900; FP_UID=8445b89a7d6d2a8dbe1664d24bc867ea");
+						BaiduCookie.getBaiduCookie("leiqiangca", "leiqiangcaxxxx"));
+						//"\tA369DA9A9C45DD8BC9FE928438D60BB:FG=1; BIDUPSID=32C3D76E2A16293C792F408EF59926CD; PSTM=1468940621; Hm_lvt_7a3960b6f067eb0085b7f96ff5e660b0=1501303955,1501871110; secu=1; __cfduid=d7661dab55b96415dc8815459d943699f1490805720; BDUSS=NHSi15TUZLemdGSjdUam1FMlhJaW9kdDl3SDhlLWIxOURrR0JJUlhsQlo1VXRaSVFBQUFBJCQAAAAAAAAAAAEAAAAciYZBbGVpcWlhbmdjYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFlYJFlZWCRZUH; PANWEB=1; BDCLND=3AaiGAgU9Cxj%2Fxjh3UZVtrKW1%2FaGT8qi; cflag=15%3A3; locale=zh; SCRC=effb58aebc8f6686cbc14c9b3c365044; STOKEN=83534a6e9455f69b52dd57132f8a272b3361e35b224229f54849652e76990aa4; uc_login_unique=ed181ca636958757d68ee8aa321c7515; PANPSC=11081265557532140931%3AbuiwA%2FpMDzv%2FItLn%2F9kOo9wxnZzNwr1w9edlHB%2Bd1obzhZoHIFjSWXgXofrWESI4I6iA8uodFjd7fYrNEXc%2BGUOv%2BbFn7vDNgFjHX8xyNyqtUq%2FdzxBw4uWh0XthgcRWkxwTFV4Vd9Unih65clERtryHDAnhPhMz5dNt%2BsRbU69UMSLhYBPCxc5TMpqnKCFM; SFSSID=ieks1al7c7hggkgo5i1j3shp12; BDRCVFR[gltLrB7qNCt]=mk3SLVN4HKm; PSINO=6; H_PS_PSSID=; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02537795900; FP_UID=8445b89a7d6d2a8dbe1664d24bc867ea");
 
-		String urlPage1 = "http://pan.baidu.com/mbox/group/getinfooutauth?" + shortStr;
+		String urlPage1 = "http://pan.baidu.com/mbox/group/getinfooutauth?" + requestQuery;
 		String result = HttpRequest.getContentByHeader(urlPage1, header);
-		boolean check = result.contains("{\"errno\":0,");
+	    System.out.println("result=" + result);
+		int check = 0;
+		if(result.contains("{\"errno\":0,")){
+			check = 1;
+		}else if(result.contains("{\"errno\":112,")){
+			check = -1;
+		}
 		return check;
 	}
 

@@ -60,8 +60,8 @@ public class Btc38 implements Runnable {
 		//ToutiaoScheduler ts = new ToutiaoScheduler();
 		//ts.joke();
 		
-		TiebaScheduler tb = new TiebaScheduler();
-		tb.link();
+		//TiebaScheduler tb = new TiebaScheduler();
+		//tb.link();
 	}
 
 	// 1小时线数据
