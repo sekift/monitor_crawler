@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.sekift.crawler.core.HttpRequest;
 import com.sekift.util.JsoupUtil;
 import com.sekift.util.SleepUtil;
+import com.sekift.util.UrlUtil;
 
 public class BaiduTieba implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(BaiduTieba.class);
@@ -26,9 +27,14 @@ public class BaiduTieba implements Runnable {
 	private static final String SHORT_IDX = "?short=";
 	private static final int SHORT_INDEX = 14;
 	private static final List<String> denyList = new ArrayList<String>();
-
+	
+	BaiduYun baiduYun = new BaiduYun();
+	
+	public void run() {
+		getContent();
+	}
+	
 	public void getContent() {
-		BaiduYun baiduYun = new BaiduYun();
 		String keyWord = "short";
 		String urlPage1 = "http://tieba.baidu.com/f/search/res?isnew=1&kw=&qw=" + keyWord
 				+ "&rn=50&un=&only_thread=0&sm=1&sd=&ed=&pn=1";
@@ -83,10 +89,14 @@ public class BaiduTieba implements Runnable {
 							+ dateTime;
 					String spe = "<br />";
 					String resultContent = "<a href=\"" + content + "\" target=\"_blank\">" + content + "</a>";
-					String requestQuery = getQuery(content);
+					String requestQuery = UrlUtil.getUrlParamter(content);
+					String urlValue = UrlUtil.getUrlParamterValue(content, "short");
 					
-					if ((!deleteList.contains(content)) && (content.contains("pan.baidu.com"))
-							&& (!denyList.contains(requestQuery))) {
+					if ((!deleteList.contains(content)) 
+							&& (content.contains("pan.baidu.com"))
+							&& (!denyList.contains(requestQuery))
+							&& null != urlValue 
+							&& urlValue.matches("^[a-zA-Z0-9]{6,8}+$")) {
 						deleteList.add(content);
 						//判断失效
 						resultList.add(resultLink + spe + resultContent);
@@ -115,19 +125,7 @@ public class BaiduTieba implements Runnable {
 			getContent();
 		}
 	}
-
-	public static String getQuery(String url) {
-		String shortStr = null;
-		if (url != null)
-			try {
-				URL u = new URL(url);
-				shortStr = u.getQuery();
-			} catch (Exception localException) {
-				logger.error("[tieba]解释URL出错了", localException);
-			}
-		return shortStr;
-	}
-
+	
 	/**
 	 * "errno": 0  表示能用
 	 * "errno": 112 表示失效
@@ -164,10 +162,6 @@ public class BaiduTieba implements Runnable {
 		return check;
 	}
 
-	public void run() {
-		getContent();
-	}
-	
 	static {
 	    denyList.add("short=1fDVGW");
 	    denyList.add("short=A0ISm");
